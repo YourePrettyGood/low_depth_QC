@@ -7,9 +7,6 @@ export PSEUDOREF="/home/pfr8/bin/PseudoreferencePipeline"
 #Samtools (compatible with versions 1.0+, may have issues with older)
 #Picard (can obtain via `git clone https://github.com/broadinstitute/picard --recursive`)
 
-#For PSEUDOFASTA task, also depends on:
-#BEDtools (can obtain via `git clone https://github.com/arq5x/bedtools2 --recursive`)
-
 export BBMERGE="/home/pfr8/bin/bbmap/bbmerge.sh"
 export SEQPREP="/home/pfr8/bin/SeqPrep/SeqPrep"
 export FASTQC="/ysm-gpfs/apps/software/FastQC/0.11.8-Java-1.8/fastqc"
@@ -21,14 +18,15 @@ export SAMTOOLS="/home/pfr8/bin/samtools/bin/samtools"
 export PICARD="/home/pfr8/bin/picard/picard-2.23.3.jar"
 export MUTSERVE="/home/pfr8/bin/mutserve/mutserve"
 export HAPLOGREP="/home/pfr8/bin/haplogrep-cmd/haplogrep"
-#For Rscript, just make sure to load the module in your SBATCH script
+#For Rscript, load the module:
+module load R/4.1.0-foss-2020b
 
 #Configuration files and databases:
 #FastQ-Screen configuration file:
 #This configuration is generic for human samples:
 #export SCREENCONF="/home/pfr8/bin/FastQ-Screen/fastq_screen_human_contam.conf"
 #Use this configuration for Plasmodium-focused screening:
-export SCREENCONF="/home/pfr8/bin/FastQ-Screen/fastq_screen_human_plasmodium.conf"
+export SCREENCONF="/gpfs/gibbs/pi/tucci/pfr8/bin/QCPipeline/fastq_screen_human_plasmodium.conf"
 #Kraken2 pre-compiled database:
 #For Standard (built by PFR):
 #export KRAKEN2DB="/gpfs/gibbs/pi/tucci/pfr8/Kraken2_DB/"

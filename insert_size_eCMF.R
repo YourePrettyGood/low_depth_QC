@@ -1,4 +1,9 @@
+#!/usr/bin/env Rscript
+#Read in arguments from the command line:
+options <- commandArgs(trailingOnly=TRUE)
 
+#First argument on the command line should be the individual's ID:
+ID <- options[1]
 
 #Load tidyverse for manipulating dataframes and plotting:
 library(tidyverse)
@@ -11,21 +16,30 @@ line_size <- 0.5 #Line thickness
 point_size <- 0.5 #Point radius
 alpha <- 0.5 #Make the lines and points somewhat transparent
 legend_pos <- c(0.85, 0.8) #Legend position, x and y from bottom left
-max_lens <- c(400, 1000) #Upper limits on insert length, one per plot
-#We use the same limits as the report from Claret Bio/Ed Green
-#The plots look pretty clean with these two maxima
+max_lens <- c(1000) #Upper limits on insert length, one per plot
+#The limits used in the report from Claret Bio/Ed Green would be c(400, 1000)
+#The plots look pretty clean with just one maximum at 1000
 #There are occasional gigantic TLENs which we don't want to plot, as they're
 # either mapping or reference artifacts.
-max_count <- 10000 #This makes the plots consistent with each other
-#We use the same limit as the report from Claret Bio/Ed Green
-#This is pretty reasonable for around < 10% mapping for ~1M total read pairs
+max_count <- 1000000 #This makes the plots consistent with each other
+#The limit used in the report from Claret Bio/Ed Green is pretty reasonable
+# for around < 10% mapping for ~1M total read pairs, but we're dealing with
+# more like 100% mapping for ~20-30M total read pairs
 
 #Load the insert size distribution TSV into a dataframe:
-insert_lengths <- read.table(paste(),
-                             colClasses=c(),
-                             col.names=c(),
-                             header=FALSE)
+insert_lengths <- read.table(paste0(ID, "/",
+                                    ID, "_UMproperlypaired_read_length_ePMFs.tsv"),
+                             colClasses=c(rep("character", 5),
+                                          rep("numeric", 2)),
+                             col.names=c("Individual", "Reference", "Merger",
+                                         "DataType", "State", "Count", "Length"),
+                             header=FALSE,
+                             sep="\t")
 
+#Check the input to make sure we're only dealing with one reference and
+# merger at a time:
+stopifnot(length(unique(insert_lengths$Reference)) == 1,
+          length(unique(insert_lengths$Merger)) == 1)
 
 #Now we get to the plots:
 for (max_len in max_lens) {
@@ -60,5 +74,15 @@ for (max_len in max_lens) {
                                         axis.title=element_text(face="bold"),
                                         plot.title=element_text(hjust=0.5),
                                         plot.subtitle=element_text(hjust=0.5))
-
-ggsave(paste0(, paste(indiv, ref, merger, "max_len", max_len, "insert_lengths.pdf", sep="_")), width=width_cm, height=height_cm, dpi=dpi)
+         }
+      }
+      ggsave(paste0(indiv, "/",
+             paste(indiv, ref, merger,
+                   "max_len", max_len, "insert_lengths.pdf",
+                   sep="_")),
+             width=width_cm,
+             height=height_cm,
+             units="cm",
+             dpi=dpi)
+   }
+}

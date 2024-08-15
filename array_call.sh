@@ -146,7 +146,7 @@ if [[ ! -x "$(command -v ${HAPLOGREP})" ]]; then
    exit 3
 fi
 ##Rscript
-
+# Make sure an R module with tidyverse pre-installed is loaded by pipeline_environment.sh
 
 #Make a logs directory if it doesn't already exist
 mkdir -p logs
@@ -471,6 +471,9 @@ ${SAMTOOLS} view -F0xB04 -f0x2 ${outputdir}${prefix}_${refid}_${merger}_UM_sorte
    uniq -c | \
    sort -k2,2n | \
    awk -v "indiv=${prefix}" -v "ref=${refid}" -v "merger=${merger}" -v "datatype=unmerged" -v "state=mapped" 'BEGIN{OFS="\t";}{print indiv, ref, merger, datatype, state, $1, $2;}' >> ${outputdir}${prefix}_UMproperlypaired_read_length_ePMFs.tsv
+#Now generate the insert size distribution plot using R:
+echo "Generating insert size distribution plot for ${prefix}"
+${scriptdir}/insert_size_eCMF.R ${prefix}
 
 if [[ "${refid}" == "hs37d5" || "${refid}" == "GRCh38" ]]; then
    #mtDNA haplogroup determination:
